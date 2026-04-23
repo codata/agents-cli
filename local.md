@@ -24,7 +24,45 @@ pip install google-adk
 
 ---
 
-## 2. Local Setup
+## 2. Extending with Community Skills
+
+You can broaden your coding agent's knowledge by adding skills from other community toolkits. For example, the **Croissant Toolkit** provides a vast library of over 30 expert skills (located in `.gemini/skills/`) covering NLP, ODRL, JSON-LD, RO-Crate, Neo4j, and more.
+
+To install these skills from GitHub:
+```bash
+npx skills add codata/croissant-toolkit
+```
+
+Once added, your coding agent will be able to leverage specialized patterns for things like **CDIF metadata creation**, **universal numerical fingerprints (UNF)**, and **ODRL policy enforcement** as you build your ADK agents.
+
+### Refreshing Skills in the UI
+If you have installed new skills but your coding agent doesn't see them yet, try the following:
+
+1. **Check for "Vaulted" Skills**:
+   In the **Croissant Toolkit**, some sensitive expert skills (like `fact-checker`, `cdif-maker`, or `triz`) are encrypted in the `.gemini/vault/` folder. They will **not** be recognized by the agent until they are unvaulted:
+   ```bash
+   # Use the ODRL expert to decrypt a specific skill
+   python3 .gemini/skills/odrl-expert/scripts/odrl_client.py unvault-skill [skill-name]
+   ```
+2. **Path Verification**:
+   Ensure you added the skills from the correct directory. If you only see 3 skills, you likely added the root instead of the `.gemini/skills/` path:
+   ```bash
+   npx skills add codata/croissant-toolkit/.gemini/skills
+   ```
+3. **Force Update via CLI**:
+   Run `agents-cli update` to force a re-installation context update across all IDEs.
+4. **Agent Restart**:
+   - For **Gemini CLI**, exit and restart the session.
+   - For **VS Code**, use "Reload Window".
+
+### Still not recognizing?
+If `/skills` does not show your new skills:
+- Verify that each skill folder contains a `SKILL.md` with valid YAML frontmatter.
+- Check if your coding agent is pointing to the correct global skills directory (usually `~/.local/share/gemini/skills` or similar).
+
+---
+
+## 3. Local Setup
 
 Once you have scaffolded a project with `agents-cli create`, ensure all local dependencies are installed.
 
@@ -36,7 +74,7 @@ This command uses `uv` to create a virtual environment and install the necessary
 
 ---
 
-## 3. Running your Agent
+## 4. Running your Agent
 
 There are two primary ways to interact with your agent locally:
 
@@ -93,7 +131,7 @@ Follow these steps to quickly see your agent in the local GUI:
 
 ---
 
-## 4. Troubleshooting
+## 5. Troubleshooting
 
 ### `404 NOT_FOUND` (Model Name Issues)
 If you get a 404 error saying a model like `gemini-1.5-flash` is not found:
@@ -126,7 +164,7 @@ If you encounter this error when running your agent, it means the Python environ
 
 ---
 
-## 5. Local Evaluation
+## 6. Local Evaluation
 
 Validating your agent's quality is best done locally before any deployment.
 
@@ -139,7 +177,7 @@ Evals use a local orchestrator but may call remote LLMs (like Gemini Flash) for 
 
 ---
 
-## 6. Testing & Quality Control
+## 7. Testing & Quality Control
 
 Maintain code quality using built-in linting and unit testing tools.
 
@@ -160,7 +198,7 @@ uv run pytest tests/integration
 
 ---
 
-## 7. Summary of Local Commands
+## 8. Summary of Local Commands
 
 | Task | Command |
 |------|---------|
