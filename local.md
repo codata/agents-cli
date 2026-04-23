@@ -27,7 +27,7 @@ For quick smoke tests or automated scripts, use the `run` command:
 agents-cli run "Summarize the latest project updates"
 ```
 
-### Interactive Web Playground
+### Interactive Web Playground (GUI)
 The playground provides a rich, chat-like interface to test your agent, inspect tool calls, and view trace information in real-time.
 
 ```bash
@@ -36,6 +36,36 @@ agents-cli playground
 
 - **URL**: `http://localhost:8080`
 - **Features**: Hot-reload (changes to `app/agent.py` are reflected instantly), conversation history, and detailed execution logs.
+
+### Example: Build & Run a Hello World Agent
+
+Follow these steps to quickly see your agent in the local GUI:
+
+1. **Scaffold a new project**:
+   ```bash
+   agents-cli create hello-world --prototype --yes
+   cd hello-world && agents-cli install
+   ```
+
+2. **Define the agent logic**:
+   Open `app/agent.py` and replace the content with a simple greeting agent:
+   ```python
+   from adk import Agent, Gemini
+
+   root_agent = Agent(
+       name="hello_agent",
+       model=Gemini(model="gemini-1.5-flash"),
+       instruction="You are a helpful assistant. Always start by saying 'Hello! I am your new agent.'",
+   )
+   ```
+
+3. **Launch the Playground GUI**:
+   ```bash
+   agents-cli playground
+   ```
+
+4. **Interact**:
+   Open [http://localhost:8080](http://localhost:8080) in your browser. You will see a chat interface. Type a message like "Who are you?", and your agent will respond using the logic you just defined.
 
 ---
 
