@@ -4,7 +4,27 @@ This guide describes how to run and develop your agents locally using `agents-cl
 
 ---
 
-## 1. Local Setup
+## 1. Installation
+
+There are two main packages to install:
+
+### The CLI Tool
+The `agents-cli` manages your project lifecycle.
+```bash
+uvx google-agents-cli setup
+```
+
+### The SDK Library
+The `google-adk` library provides the core classes like `Agent` and `Gemini`.
+```bash
+pip install google-adk
+```
+
+> **Note**: If you are using a scaffolded project, `agents-cli install` will handle the SDK installation for you automatically.
+
+---
+
+## 2. Local Setup
 
 Once you have scaffolded a project with `agents-cli create`, ensure all local dependencies are installed.
 
@@ -16,7 +36,7 @@ This command uses `uv` to create a virtual environment and install the necessary
 
 ---
 
-## 2. Running your Agent
+## 3. Running your Agent
 
 There are two primary ways to interact with your agent locally:
 
@@ -48,15 +68,19 @@ Follow these steps to quickly see your agent in the local GUI:
    ```
 
 2. **Define the agent logic**:
-   Open `app/agent.py` and replace the content with a simple greeting agent:
+   Open `app/agent.py` and replace the content with a simple greeting agent using the core ADK imports:
    ```python
-   from adk import Agent, Gemini
+   from google.adk.agents import Agent
+   from google.adk.models import Gemini
+   from google.adk.apps import App
 
    root_agent = Agent(
        name="hello_agent",
-       model=Gemini(model="gemini-1.5-flash"),
+       model=Gemini(model="gemini-flash-latest"),
        instruction="You are a helpful assistant. Always start by saying 'Hello! I am your new agent.'",
    )
+
+   app = App(root_agent=root_agent, name="app")
    ```
 
 3. **Launch the Playground GUI**:
@@ -69,7 +93,40 @@ Follow these steps to quickly see your agent in the local GUI:
 
 ---
 
-## 3. Local Evaluation
+## 4. Troubleshooting
+
+### `404 NOT_FOUND` (Model Name Issues)
+If you get a 404 error saying a model like `gemini-1.5-flash` is not found:
+
+1. **Use Alias Names**: Try using `gemini-flash-latest` which is an alias that points to the most stable version of Flash across both Vertex AI and AI Studio.
+2. **Check Location**: If using Vertex AI, ensure your `GOOGLE_CLOUD_LOCATION` is set correctly (e.g., `us-central1`).
+3. **Verify API Key**: If using AI Studio, ensure your `GEMINI_API_KEY` is exported and valid.
+
+### `ModuleNotFoundError: No module named 'adk'`
+If you encounter this error when running your agent, it means the Python environment doesn't have the Agent Development Kit (ADK) installed.
+
+**Solutions:**
+1. **Always use `agents-cli` commands**: Instead of `python app/agent.py`, use:
+   ```bash
+   agents-cli run "prompt"
+   # or
+   agents-cli playground
+   ```
+   These commands automatically detect and use the virtual environment managed by `uv`.
+
+2. **Run via `uv`**: If you must use a standard command, prefix it with `uv run`:
+   ```bash
+   uv run python app/agent.py
+   ```
+
+3. **Re-install dependencies**: Ensure `agents-cli install` completed successfully.
+   ```bash
+   agents-cli install
+   ```
+
+---
+
+## 5. Local Evaluation
 
 Validating your agent's quality is best done locally before any deployment.
 
@@ -82,7 +139,7 @@ Evals use a local orchestrator but may call remote LLMs (like Gemini Flash) for 
 
 ---
 
-## 4. Testing & Quality Control
+## 6. Testing & Quality Control
 
 Maintain code quality using built-in linting and unit testing tools.
 
@@ -103,7 +160,7 @@ uv run pytest tests/integration
 
 ---
 
-## 5. Summary of Local Commands
+## 7. Summary of Local Commands
 
 | Task | Command |
 |------|---------|
